@@ -1,11 +1,13 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
+from langchain_text_splitters import CharacterTextSplitter
+
 
 
 # LangChain imports
 from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import CharacterTextSplitter
+
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
