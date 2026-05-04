@@ -43,28 +43,24 @@ The system extracts relevant content and generates accurate answers using **Groq
 
 rag-pdf-chatbot/
 │
-├── app/
-│   └── app.py
-│
-├── data/
-│   └── sample.pdf
-│
-├── assets/
-│   ├── screenshot_home.png
-│   ├── screenshot_upload.png
-│   └── screenshot_answer.png
-│
+
+├── app
+
 ├── requirements.txt
+
 ├── .env.example
+
 ├── .gitignore
+
 └── README.md
+
 
 ---
 
 ## ⚙️ Installation
 
 ### 1️⃣ Clone the repository
-git clone https://github.com/your-username/rag-pdf-chatbot.git  
+git clone [https://github.com/your-username/rag-pdf-chatbot.git ](https://github.com/ThirumalJeegari/PDF-Q-A-Chatbot-Using-RAG.git) 
 cd rag-pdf-chatbot  
 
 ---
