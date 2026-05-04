@@ -60,7 +60,7 @@ rag-pdf-chatbot/
 ## ⚙️ Installation
 
 ### 1️⃣ Clone the repository
-git clone [https://github.com/your-username/rag-pdf-chatbot.git ](https://github.com/ThirumalJeegari/PDF-Q-A-Chatbot-Using-RAG.git) 
+git clone [https://github.com/ThirumalJeegari/PDF-Q-A-Chatbot-Using-RAG.git ](https://github.com/ThirumalJeegari/PDF-Q-A-Chatbot-Using-RAG.git) 
 cd rag-pdf-chatbot  
 
 ---
