@@ -13,21 +13,20 @@ from langchain_groq import ChatGroq
 # =====================================================
 st.set_page_config(
     page_title="RAG PDF Chatbot",
-    page_icon="📄",
     layout="wide"
 )
 
-st.title("📄 RAG PDF Q&A Chatbot")
+st.title("RAG PDF Q&A Chatbot")
 
 # =====================================================
-# LOAD ENV
+# LOAD ENVIRONMENT VARIABLES
 # =====================================================
 load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 if not GROQ_API_KEY:
-    st.error("❌ GROQ API Key not found")
+    st.error("GROQ API Key not found")
     st.stop()
 
 # =====================================================
@@ -43,23 +42,23 @@ if "summary" not in st.session_state:
     st.session_state.summary = ""
 
 # =====================================================
-# FILE UPLOAD
+# FILE UPLOADER
 # =====================================================
 uploaded_file = st.file_uploader(
-    "📤 Upload PDF",
+    "Upload PDF",
     type="pdf"
 )
 
 # =====================================================
-# PROCESS PDF BUTTON
+# PROCESS PDF
 # =====================================================
 if uploaded_file:
 
-    if st.button("📥 Submit PDF"):
+    if st.button("Submit"):
 
-        with st.spinner("📖 Reading and Processing PDF..."):
+        with st.spinner("Reading and Processing PDF..."):
 
-            # Save PDF
+            # Save uploaded PDF
             with open("temp.pdf", "wb") as f:
                 f.write(uploaded_file.read())
 
@@ -67,7 +66,7 @@ if uploaded_file:
             loader = PyPDFLoader("temp.pdf")
             documents = loader.load()
 
-            # Split Text
+            # Split text
             splitter = CharacterTextSplitter(
                 chunk_size=1000,
                 chunk_overlap=200
@@ -75,12 +74,12 @@ if uploaded_file:
 
             docs = splitter.split_documents(documents)
 
-            # Embeddings
+            # Create embeddings
             embeddings = HuggingFaceEmbeddings(
                 model_name="sentence-transformers/all-MiniLM-L6-v2"
             )
 
-            # FAISS DB
+            # Create FAISS vector DB
             db = FAISS.from_documents(
                 docs,
                 embeddings
@@ -110,16 +109,18 @@ if uploaded_file:
 
             summary_response = llm.invoke(summary_prompt)
 
-            st.session_state.summary = summary_response.content
+            st.session_state.summary = (
+                summary_response.content
+            )
 
-        st.success("✅ PDF Processed Successfully!")
+        st.success("PDF Processed Successfully")
 
 # =====================================================
 # SHOW SUMMARY
 # =====================================================
 if st.session_state.summary != "":
 
-    st.subheader("📝 PDF Summary")
+    st.subheader("PDF Summary")
 
     st.write(st.session_state.summary)
 
@@ -130,20 +131,20 @@ if st.session_state.vector_db:
 
     st.divider()
 
-    st.subheader("💬 Ask Questions From PDF")
+    st.subheader("Ask Questions From PDF")
 
     query = st.text_input(
         "Ask your question"
     )
 
     # =================================================
-    # ASK BUTTON
+    # ASK QUESTION BUTTON
     # =================================================
-    if st.button("🚀 Ask Question"):
+    if st.button("Ask Question"):
 
         if query.strip() != "":
 
-            with st.spinner("🤖 Thinking..."):
+            with st.spinner("Thinking..."):
 
                 try:
 
@@ -153,7 +154,7 @@ if st.session_state.vector_db:
                         .similarity_search(query)
                     )
 
-                    # Context
+                    # Create Context
                     context = "\n".join(
                         [
                             doc.page_content
@@ -170,8 +171,8 @@ if st.session_state.vector_db:
 
                     # Prompt
                     prompt = f"""
-                    Answer the question using only the
-                    provided context.
+                    Answer the question using only
+                    the provided context.
 
                     Context:
                     {context}
@@ -180,12 +181,12 @@ if st.session_state.vector_db:
                     {query}
                     """
 
-                    # Response
+                    # Generate Response
                     response = llm.invoke(prompt)
 
                     answer = response.content
 
-                    # Store History
+                    # Store Chat History
                     st.session_state.chat_history.append(
                         {
                             "question": query,
@@ -195,7 +196,7 @@ if st.session_state.vector_db:
 
                 except Exception as e:
 
-                    st.error(f"❌ Error: {str(e)}")
+                    st.error(f"Error: {str(e)}")
 
 # =====================================================
 # CHAT HISTORY
@@ -204,7 +205,7 @@ if st.session_state.chat_history:
 
     st.divider()
 
-    st.subheader("📚 Conversation History")
+    st.subheader("Conversation History")
 
     for i, chat in enumerate(
         st.session_state.chat_history
@@ -212,10 +213,12 @@ if st.session_state.chat_history:
 
         st.markdown(
             f"""
-            ### 🧑 Question {i+1}
+            Question {i+1}
+
             {chat['question']}
 
-            ### 🤖 Answer
+            Answer
+
             {chat['answer']}
             """
         )
@@ -227,12 +230,12 @@ if st.session_state.chat_history:
 # =====================================================
 if st.session_state.vector_db:
 
-    if st.button("❌ End Chat"):
+    if st.button("End Chat"):
 
         st.session_state.vector_db = None
         st.session_state.chat_history = []
         st.session_state.summary = ""
 
-        st.success("Chat Ended Successfully!")
+        st.success("Chat Ended Successfully")
 
         st.rerun()
